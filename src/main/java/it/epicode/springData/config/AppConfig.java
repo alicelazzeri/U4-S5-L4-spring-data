@@ -1,6 +1,9 @@
-package it.epicode.springData.configuration;
+package it.epicode.springData.config;
 
-import it.epicode.springData.data.*;
+import it.epicode.springData.data.Drink;
+import it.epicode.springData.data.Pizza;
+import it.epicode.springData.data.Table;
+import it.epicode.springData.data.Topping;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,44 +12,32 @@ import org.springframework.context.annotation.PropertySource;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Configuration
 @PropertySource("application.properties")
 public class AppConfig {
-    // Riferimenti alle istanze esistenti
-    @Bean
-    public Menu menu() {
-        List<Pizza> pizzaList = pizzaList();
-        List<Drink> drinkList = drinksList();
-        List<Topping> toppingList = toppingsList();
-        //return new Menu(pizzaList, drinkList, toppingList);
-        return new Menu (pizzaList(), drinksList(), toppingsList() );
-    }
-
-    // Riferimento al menu
     @Bean(name = "toppings_tomato")
     public Topping toppingTomatoBean() {
-        return new Topping("Tomato", 0, 0, menu());
+        return new Topping("Tomato", 0, 0);
     }
 
     @Bean(name = "toppings_cheese")
     public Topping toppingCheeseBean() {
-        return new Topping("Cheese", pi);
+        return new Topping("Cheese", 92, 0.69);
     }
 
     @Bean(name = "toppings_ham")
     public Topping toppingHamBean() {
-        return new Topping("Ham", 35, 0.99, menu());
+        return new Topping("Ham", 35, 0.99);
     }
 
     @Bean(name = "toppings_pineapple")
     public Topping toppingPineappleBean() {
-        return new Topping("Pineapple", 24, 0.79, menu());
+        return new Topping("Pineapple", 24, 0.79);
     }
 
     @Bean(name = "toppings_salami")
     public Topping toppingSalamiBean() {
-        return new Topping("Salami", 86, 0.99, menu());
+        return new Topping("Salami", 86, 0.99);
     }
 
 
@@ -55,7 +46,7 @@ public class AppConfig {
         List<Topping> tList = new ArrayList<>();
         tList.add(toppingTomatoBean());
         tList.add(toppingCheeseBean());
-        return new Pizza("Pizza Margherita", tList, false, menu());
+        return new Pizza("Pizza Margherita", tList, false);
     }
 
     @Bean(name = "hawaiian_pizza")
@@ -65,7 +56,7 @@ public class AppConfig {
         tList.add(toppingCheeseBean());
         tList.add(toppingHamBean());
         tList.add(toppingPineappleBean());
-        return new Pizza("Hawaiian Pizza", tList, false, menu());
+        return new Pizza("Hawaiian Pizza", tList, false);
     }
 
     @Bean(name = "salami_pizza")
@@ -74,32 +65,22 @@ public class AppConfig {
         tList.add(toppingTomatoBean());
         tList.add(toppingCheeseBean());
         tList.add(toppingSalamiBean());
-        return new Pizza("Salami Pizza", tList, false, menu());
-    }
-
-    @Bean(name = "salami_pizza_xl")
-    public Pizza pizzaSalamiXlBean() {
-        List<Topping> tList = new ArrayList<>();
-        tList.add(toppingTomatoBean());
-        tList.add(toppingCheeseBean());
-        tList.add(toppingSalamiBean());
-        return new Pizza("Salami Pizza XL", tList, true, menu());
+        return new Pizza("Salami Pizza", tList, false);
     }
 
     @Bean(name = "lemonade")
     public Drink lemonadeBean() {
-        return new Drink("Lemonade", menu());
+        return new Drink("Lemonade", 128, 1.29);
     }
 
     @Bean(name = "water")
     public Drink waterBean() {
-        return new Drink("Water", menu());
+        return new Drink("Water", 0, 1.29);
     }
 
     @Bean(name = "wine")
     public Drink wineBean() {
-        //return new Drink("Wine", 607, 7.49);
-        return new Drink("Wine", menu());
+        return new Drink("Wine", 607, 7.49);
     }
 
     @Bean("pizzas")
@@ -108,7 +89,6 @@ public class AppConfig {
         pizzas.add(pizzaMargheritaBean());
         pizzas.add(pizzaHawaiianBean());
         pizzas.add(pizzaSalamiBean());
-        pizzas.add(pizzaSalamiXlBean());
         return pizzas;
     }
 
@@ -146,4 +126,6 @@ public class AppConfig {
     Table getTable3(@Value("${seat.price}") double seatPrice) {
         return new Table(3, 8, true, seatPrice);
     }
+
 }
+

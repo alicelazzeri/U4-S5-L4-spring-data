@@ -2,9 +2,7 @@ package it.epicode.springData.data;
 
 import it.epicode.springData.data.enums.OrderStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
@@ -12,27 +10,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Entity
-@jakarta.persistence.Table(name = "orders")
-@Data
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder(setterPrefix = "with")
+@Getter
+@Setter
+@jakarta.persistence.Table(name = "orders")
 
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
     private int numeroOrdine;
-
-    @Column
-    private OrderStatus state;
-    @Column (name = "num_coperti")
+    private OrderStatus orderStatus;
     private int numCoperti;
-    @Column (name = "ora_acquisizione")
     private LocalTime oraAcquisizione;
-    @Column (name = "ordered_products")
+	/*@ManyToMany
+	@JoinTable(name = "items_orders",
+			joinColumns = @JoinColumn(name = "item"),
+			inverseJoinColumns = @JoinColumn(name = "order"))*/
+
+    @ManyToMany
+    @JoinTable(
+            name = "orders_items",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "item_id"))
     private List<Item> orderedProducts;
-    @Column
+    @ManyToOne
     private Table table;
 
     public Order(int numCoperti, Table table) {
@@ -40,7 +46,7 @@ public class Order {
         if (table.getNumMaxCoperti() <= numCoperti)
             throw new RuntimeException("Numero coperti maggiore di numero massimo posti sul tavolo!");
         this.numeroOrdine = rndm.nextInt(1000, 100000);
-        this.state = OrderStatus.IN_CORSO;
+        this.orderStatus = OrderStatus.IN_CORSO;
         this.numCoperti = numCoperti;
         this.oraAcquisizione = LocalTime.now();
         this.orderedProducts = new ArrayList<>();
@@ -57,7 +63,7 @@ public class Order {
 
     public void print() {
         System.out.println("id ordine--> " + this.numeroOrdine);
-        System.out.println("stato--> " + this.state);
+        System.out.println("stato--> " + this.orderStatus);
         System.out.println("numero coperti--> " + this.numCoperti);
         System.out.println("ora acquisizione--> " + this.oraAcquisizione);
         System.out.println("numero tavolo--> " + this.table.getNumTable());
@@ -67,4 +73,3 @@ public class Order {
 
     }
 }
-

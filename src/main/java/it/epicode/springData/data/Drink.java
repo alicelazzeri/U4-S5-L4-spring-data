@@ -1,21 +1,29 @@
 package it.epicode.springData.data;
 
-import jakarta.persistence.*;
-import jakarta.persistence.Table;
-import lombok.*;
+import jakarta.persistence.Entity;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
-@Table(name = "drinks")
-@Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class Drink extends Item {
-    @Column
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
+    public Drink(String name, int calories, double price) {
+        super(calories, price);
+        this.name = name;
+    }
 
+    @Override
+    public String toString() {
+        return "Drink{" +
+                "name='" + name + '\'' +
+                ", calories=" + calories +
+                ", price=" + price +
+                '}';
+    }
 }
 

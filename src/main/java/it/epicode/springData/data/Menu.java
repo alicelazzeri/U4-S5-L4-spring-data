@@ -1,32 +1,41 @@
 package it.epicode.springData.data;
 
-import jakarta.persistence.*;
 import jakarta.persistence.Table;
-import lombok.*;
-import org.springframework.stereotype.Component;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
+@Getter
+@Setter
 @Entity
-@Table (name = "menu")
-
-@Data
-@AllArgsConstructor
+@Table(name = "menus")
 @NoArgsConstructor
-@Component
-
 public class Menu {
     @Id
-    @GeneratedValue (strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    @OneToMany (mappedBy = "menu")
+
+    private String name;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "menu")
+    @Autowired
     private List<Pizza> pizzaList;
 
-    @OneToMany (mappedBy = "menu")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "menu")
+    @Autowired
     private List<Drink> drinkList;
 
-    @OneToMany (mappedBy = "menu")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "menu")
+    @Autowired
     private List<Topping> toppingList;
+
+    public Menu(String name) {
+        this.name = name;
+    }
 
     public void printMenu() {
         System.out.println("******* Menu *******");
@@ -44,4 +53,3 @@ public class Menu {
 
     }
 }
-

@@ -1,49 +1,45 @@
 package it.epicode.springData.data;
 
 import jakarta.persistence.*;
-import jakarta.persistence.Table;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @Entity
-@Table(name = "pizzas")
-@Data
-@AllArgsConstructor
+@DiscriminatorValue("Pizza")
 @NoArgsConstructor
-@Builder(setterPrefix = "with")
-
 public class Pizza extends Item {
-    @Column
     private String name;
-    @Column
+    @ManyToMany
+    @JoinTable(name = "toppings_pizzas", joinColumns = @JoinColumn(name = "pizzas"), inverseJoinColumns = @JoinColumn(name = "toppings"))
+    private List<Topping> toppingList;
     private boolean isXl = false;
 
-    @OneToMany(mappedBy = "pizza", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Topping> toppings = new ArrayList<>();
-
-    @ManyToOne
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
+    public Pizza(String name, List<Topping> toppingList, boolean isXl) {
+        super(700, 4.3);
+        this.name = name;
+        this.toppingList = toppingList;
+        this.isXl = isXl;
+    }
 
     @Override
     public int getCalories() {
-        return super.getCalories() + this.toppings.stream().mapToInt(Topping::getCalories).sum();
+        return super.getCalories() + this.getToppingList().stream().mapToInt(Topping::getCalories).sum();
     }
 
     @Override
     public double getPrice() {
-        return super.getPrice() + this.toppings.stream().mapToDouble(Topping::getPrice).sum();
+        return super.getPrice() + this.getToppingList().stream().mapToDouble(Topping::getPrice).sum();
     }
 
     @Override
     public String toString() {
         return "Pizza{" +
                 "name='" + name + '\'' +
-                ", calories=" + getCalories() +
-                ", price=" + getPrice() +
-                ", toppings=" + toppings +
+                ", calories=" + calories +
+                ", price=" + price +
                 ", isXl=" + isXl +
                 '}';
     }
